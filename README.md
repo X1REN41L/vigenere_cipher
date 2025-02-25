@@ -20,7 +20,7 @@ This is a simple GUI-based Vigenère Cipher encoder and decoder built using Pyth
 2. Ensure you have Python installed.
 3. Run the script using:
    ```sh
-   python script.py
+   python main.py
    ```
 
 ## Usage
