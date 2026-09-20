@@ -15,12 +15,21 @@ def process(message, password, mode):
     if re.search(r'\d', message) or re.search(r'\d', password):
         log("Cannot cipher numbers. Please spell them out.")
         return ""
-    
-    message1 = message.replace(" ", "").upper()
-    password1 = password.replace(" ", "").upper()
+
+    message1 = re.sub(r'[^A-Za-z]', '', message).upper()
+    password1 = re.sub(r'[^A-Za-z]', '', password).upper()
+
+    if not message1:
+        log("Input must contain at least one letter.")
+        return ""
+
+    if not password1:
+        log("Password must contain at least one letter.")
+        return ""
+
     processed_password = (password1 * (len(message1) // len(password1))) + password1[:(len(message1) % len(password1))]
     output_text = ""
-    
+
     if mode == "0":
         for m, p in zip(message1, processed_password):
             value5 = ((ord(m) - ord('A')) + (ord(p) - ord('A'))) % 26
@@ -29,7 +38,7 @@ def process(message, password, mode):
         for d, p in zip(message1, processed_password):
             value4 = ((ord(d) - ord('A')) - (ord(p) - ord('A')) + 26) % 26
             output_text += chr(value4 + ord('A'))
-    
+
     return output_text
 
 #####################
@@ -41,17 +50,17 @@ def process_input():
         input_text = input_textbox.get("1.0", tk.END).strip()
         mode = option_var.get()
         password = password_entry.get()
-        
+
         if not input_text:
             log("Input cannot be empty!")
             return
-        
+
         if not password:
             log("Password cannot be empty!")
             return
 
         output_text = process(input_text, password, mode)
-        
+
         if output_text:
             output_textbox.config(state="normal")
             output_textbox.delete("1.0", tk.END)
@@ -81,10 +90,18 @@ def copy_output():
     root.clipboard_append(output_textbox.get("1.0", tk.END).strip())
 
 def paste_input():
-    input_textbox.insert(tk.END, root.clipboard_get())
+    try:
+        input_textbox.insert(tk.END, root.clipboard_get())
+    except tk.TclError:
+        log("Clipboard is empty or contains non-text data.")
 
 def clear_input():
     input_textbox.delete("1.0", tk.END)
+
+def clear_output():
+    output_textbox.config(state="normal")
+    output_textbox.delete("1.0", tk.END)
+    output_textbox.config(state="disabled")
 
 #####################
 #### MAIN WINDOW ####
@@ -151,9 +168,10 @@ copy_button = ttk.Button(options_frame, text="Copy Output", command=copy_output)
 copy_button.pack(pady=2)
 paste_button = ttk.Button(options_frame, text="Paste Input", command=paste_input)
 paste_button.pack(pady=2)
-clear_button = ttk.Button(options_frame, text="Clear Input", command=clear_input)
-clear_button.pack(pady=2)
-
+clear_input_button = ttk.Button(options_frame, text="Clear Input", command=clear_input)
+clear_input_button.pack(pady=2)
+clear_output_button = ttk.Button(options_frame, text="Clear Output", command=clear_output)
+clear_output_button.pack(pady=2)
 ####################
 #### LOG WINDOW ####
 ####################
