@@ -123,7 +123,7 @@ main_frame.rowconfigure(4, weight=1)
 #######################
 #### CREDIT LABEL ####
 #######################
-credit_label = ttk.Label(main_frame, text="BY S M JAYEED AJWAD | smjayeedajwad@gmail.com", font=("Monaco", 10, "bold"))
+credit_label = ttk.Label(main_frame, text="BY S M JAYEED AJWAD", font=("Monaco", 10, "bold"))
 credit_label.grid(row=0, column=0, columnspan=3, pady=5, sticky="w")
 
 ###################
